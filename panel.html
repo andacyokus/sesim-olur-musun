@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:url("https://images.unsplash.com/photo-1517849845537-4d257902454a") center/cover;
+  font-family:Arial;
+}
+
+.overlay{
+  position:absolute;
+  inset:0;
+  background:rgba(255,255,255,.7);
+  backdrop-filter:blur(10px);
+}
+
+.panel{
+  position:relative;
+  background:#fff;
+  padding:40px;
+  width:400px;
+  border-radius:30px;
+  box-shadow:0 30px 60px rgba(0,0,0,.25);
+  text-align:center;
+}
+
+h2{margin-bottom:20px;}
+
+select,input{
+  width:100%;
+  padding:14px;
+  font-size:16px;
+  border-radius:12px;
+  border:1px solid #ccc;
+  margin-bottom:12px;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  font-size:16px;
+  border-radius:14px;
+  border:none;
+  cursor:pointer;
+  margin-bottom:10px;
+}
+
+.add{background:#f3b267;}
+.sub{background:#ddd;}
+.goal{background:#f3b267;}
+.reset{background:#f08c6a;color:#fff;}
+.undo{background:#999;color:#fff;}
+
+.log{
+  margin-top:15px;
+  max-height:120px;
+  overflow:auto;
+  font-size:14px;
+  text-align:left;
+  color:#333;
+}
+</style>
+</head>
+
+<body>
+<div class="overlay"></div>
+
+<div class="panel">
+  <h2>🐾 Mama Paneli</h2>
+
+  <!-- 4 KİŞİ -->
+  <select id="user">
+    <option>Buğra Andaç Yokuş</option>
+    <option>Gönüllü 1</option>
+    <option>Gönüllü 2</option>
+    <option>Gönüllü 3</option>
+  </select>
+
+  <input type="number" id="kg" placeholder="KG">
+
+  <button class="add" onclick="addKg()">KG EKLE</button>
+  <button class="sub" onclick="removeKg()">KG SİL</button>
+  <button class="undo" onclick="undo()">SON İŞLEMİ GERİ AL</button>
+
+  <input type="number" id="goal" placeholder="Hedef KG">
+  <button class="goal" onclick="setGoal()">HEDEF GÜNCELLE</button>
+
+  <button class="reset" onclick="resetAll()">RESET</button>
+
+  <div class="log" id="log"></div>
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCZgEm4igYpJiUau2JfQvF0AhEM00030xo",
+  authDomain: "sesim-olur-musun.firebaseapp.com",
+  databaseURL: "https://sesim-olur-musun-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "sesim-olur-musun",
+  storageBucket: "sesim-olur-musun.firebasestorage.app",
+  messagingSenderId: "453877657952",
+  appId: "1:453877657952:web:b04c4579af446a17f1ee05"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const stateRef = db.ref("state");
+const logRef = db.ref("log");
+
+let lastState = null;
+
+stateRef.on("value",s=> lastState = s.val());
+
+logRef.limitToLast(5).on("value",s=>{
+  let html="";
+  s.forEach(x=> html += `<div>• ${x.val()}</div>`);
+  document.getElementById("log").innerHTML = html;
+});
+
+function log(msg){
+  logRef.push(msg);
+}
+
+function addKg(){
+  const v=Number(kg.value); if(!v)return;
+  stateRef.transaction(d=>{
+    d=d||{kg:0,goal:300};
+    d.kg+=v; return d;
+  });
+  log(`${user.value}: +${v} KG`);
+  kg.value="";
+}
+
+function removeKg(){
+  const v=Number(kg.value); if(!v)return;
+  stateRef.transaction(d=>{
+    d=d||{kg:0,goal:300};
+    d.kg=Math.max(0,d.kg-v); return d;
+  });
+  log(`${user.value}: -${v} KG`);
+  kg.value="";
+}
+
+function setGoal(){
+  const v=Number(goal.value); if(!v)return;
+  stateRef.update({goal:v});
+  log(`Hedef ${v} KG oldu`);
+  goal.value="";
+}
+
+function undo(){
+  if(!lastState) return;
+  stateRef.set(lastState);
+  log("Son işlem geri alındı");
+}
+
+function resetAll(){
+  if(!confirm("Her şey sıfırlansın mı?")) return;
+  stateRef.set({kg:0,goal:300});
+  log("RESET yapıldı");
+}
+</script>
+</body>
+</html>

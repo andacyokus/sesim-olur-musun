@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<style>
+body{
+margin:0;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:url("https://images.unsplash.com/photo-1517849845537-4d257902454a") center/cover;
+font-family:Arial;
+}
+
+.overlay{
+position:absolute;
+inset:0;
+background:rgba(255,255,255,.7);
+backdrop-filter:blur(10px);
+}
+
+.container{
+position:relative;
+background:white;
+padding:60px;
+border-radius:40px;
+width:800px;
+text-align:center;
+box-shadow:0 40px 80px rgba(0,0,0,.2);
+}
+
+.logo{
+position:absolute;
+top:30px;
+right:30px;
+}
+
+.logo img{
+height:100px;
+opacity:.85;
+}
+
+.bar-bg{
+height:40px;
+background:#eee;
+border-radius:30px;
+overflow:hidden;
+margin-top:30px;
+}
+
+.bar{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#f3b267,#f08c6a);
+transition:.5s;
+}
+
+h1{font-size:50px;}
+
+#info{font-size:32px;margin-top:20px;}
+</style>
+</head>
+
+<body>
+
+<div class="overlay"></div>
+
+<div class="container">
+
+<div class="logo"><img src="logo.png"></div>
+
+<h1>Sesim Olur Musun?</h1>
+
+<div class="bar-bg">
+<div class="bar" id="bar"></div>
+</div>
+
+<div id="info"></div>
+
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCZgEm4igYpJiUau2JfQvF0AhEM00030xo",
+  authDomain: "sesim-olur-musun.firebaseapp.com",
+  databaseURL: "https://sesim-olur-musun-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "sesim-olur-musun",
+  storageBucket: "sesim-olur-musun.firebasestorage.app",
+  messagingSenderId: "453877657952",
+  appId: "1:453877657952:web:b04c4579af446a17f1ee05"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+firebase.database().ref("state").on("value",s=>{
+let d=s.val()||{kg:0,goal:300};
+
+let p=Math.min(d.kg/d.goal*100,100);
+
+bar.style.width=p+"%";
+info.innerText=`${d.kg} KG / ${d.goal} KG`;
+});
+</script>
+
+</body>
+</html>
