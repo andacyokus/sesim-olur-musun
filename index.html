@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Sesim Olur Musun?</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #f6e6b4, #f2d28a);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.95);
+      padding: 50px 70px;
+      border-radius: 32px;
+      text-align: center;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.25);
+      width: 420px;
+    }
+
+    h1 {
+      margin: 0 0 30px;
+      font-size: 36px;
+      font-weight: 700;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    a {
+      text-decoration: none;
+      padding: 18px;
+      border-radius: 14px;
+      font-size: 20px;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(90deg, #f5b36a, #f08a5d);
+      transition: transform .15s ease, box-shadow .15s ease;
+      box-shadow: 0 10px 20px rgba(0,0,0,.15);
+    }
+
+    a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(0,0,0,.25);
+    }
+
+    .hint {
+      margin-top: 25px;
+      font-size: 14px;
+      opacity: .65;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <h1>Sesim Olur Musun?</h1>
+
+    <div class="buttons">
+      <a href="screen.html">📺 Bağış Ekranı</a>
+      <a href="panel.html">⚙️ Yönetim Paneli</a>
+    </div>
+
+    <div class="hint">
+      Canlı bağış takip sistemi
+    </div>
+  </div>
+
+</body>
+</html>
